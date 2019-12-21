@@ -1,0 +1,54 @@
+<html>
+<head>
+  <title>shitty reddit</title>
+
+  <script>
+    const newThread = () => {
+      data = {
+        'title': document.querySelector('#post-title').value,
+        'body': document.querySelector('#post-body').value,
+        'is_link': document.querySelector('#post-type-link').checked,
+      };
+      fetch('/newpost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <table>
+    <tr>
+      <th>Post</th>
+      <th>Comments</th>
+    </tr>
+    
+    {% for post in posts %}
+    <tr>
+      {% if post.is_link %}
+      <td><a href="{{ post.body }}"> {{ post.title }} </a></td>
+      {% else %}
+      <td><a href="/comments?pid={{ post.post_id }}"> {{ post.title }} </a></td>
+      {% endif %}
+      
+      <td><a href="/comments?pid={{ post.post_id }}">comments</a></td>
+    </tr>
+    {% endfor %}
+
+  </table>
+
+
+  <div>
+    <input type='text' id='post-title' name='title' />
+    <input type='text' id='post-body' name='body' />
+    <input type='radio' id='post-type-link' checked /> Link
+    <input type='radio' id='post-type-body' /> Body
+    <button onclick='newThread()'>Post</button>
+  </div>
+
+</body>
+</html>

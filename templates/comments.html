@@ -1,0 +1,37 @@
+<script>
+const reply = (postId, commentId) => {
+  content = prompt('Reply?');
+  data = {
+    'post_id': postId,
+    'parent_id': commentId, // this comment becomes the parent
+    'body': content,
+  };
+  fetch('/newcomment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data),
+  });
+}
+</script>
+
+<ul>
+  {% for child in comments[0].children recursive %}
+    <li onclick='reply({{pid}}, {{child}})'>{{comments[child].body}}</li>
+    {% if comments[child].children|length > 0 %}
+      <ul>
+        {{loop(comments[child].children)}}
+      </ul>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+
+
+<!--
+<form action='/newcomment?pid={{pid}}&parentid=0' method='post'>
+  <input type='text' id='body' name='body' />
+  <input type="submit" value="Submit">
+</form>
+-->
